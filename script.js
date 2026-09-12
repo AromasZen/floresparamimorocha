@@ -1,7 +1,7 @@
 /* ============================================
-   FLORES AMARILLAS – Script Principal
+   TULIPANES – Script Principal
    Experiencia romántica interactiva
-   21 de Septiembre – Día de las Flores Amarillas
+   Un jardín de tulipanes de colores
    ============================================ */
 
 // =========================================================
@@ -24,14 +24,14 @@ const CONFIG = {
     musicEnabled:    false,
     musicFile:       'music.mp3',
 
-    // Apariencia de las flores
+    // Apariencia de los tulipanes
     flower: {
         minScale:       0.45,
         maxScale:       1.15,
-        minPetals:      8,
-        maxPetals:      18,
-        stemHeightBase: 80,   // altura base del tallo
-        growthDuration: 2800,
+        minPetals:      5,
+        maxPetals:      7,
+        stemHeightBase: 90,   // los tulipanes tienen tallos más largos
+        growthDuration: 2600,
     },
 
     // Partículas ambientales
@@ -207,20 +207,27 @@ const ease = {
 
 
 // =========================================================
-// 🌻 TIPOS DE FLORES – para mayor variedad
+// 🌷 TIPOS DE TULIPANES – variedades con distintas formas y colores
 // =========================================================
-// Cada flor tendrá un "tipo" que define su forma general
+// Cada tulipán tiene un tipo que define su forma y paleta de color
+// hueRange: [min, max] en grados HSL
 const FLOWER_TYPES = [
-    // 0: Girasol clásico – pétalos largos y puntiagudos
-    { petalLen: 1.0, petalWidth: 0.85, petalTip: 0.85, centerSize: 1.1, layers: 2, petalHueRange: [40, 52] },
-    // 1: Margarita – pétalos angostos y elongados
-    { petalLen: 1.35, petalWidth: 0.55, petalTip: 0.92, centerSize: 0.75, layers: 1, petalHueRange: [42, 58] },
-    // 2: Rosa amarilla estilizada – pétalos anchos y curvos
-    { petalLen: 0.85, petalWidth: 1.2, petalTip: 0.65, centerSize: 0.9, layers: 3, petalHueRange: [38, 50] },
-    // 3: Flor silvestre – pétalos irregulares, desordenados
-    { petalLen: 1.15, petalWidth: 0.75, petalTip: 0.78, centerSize: 0.85, layers: 2, petalHueRange: [44, 60] },
-    // 4: Botón de oro – flor pequeña y compacta, muchos pétalos
-    { petalLen: 0.7, petalWidth: 1.1, petalTip: 0.55, centerSize: 1.2, layers: 3, petalHueRange: [46, 56] },
+    // 0: Tulipán rojo clásico – pétalos ovalados erguidos
+    { petalLen: 1.0, petalWidth: 1.0, petalTip: 0.72, centerSize: 0.55, layers: 2, petalHueRange: [355, 10],  satRange: [85, 100], litRange: [38, 52] },
+    // 1: Tulipán rosa suave – pétalos anchos y redondeados
+    { petalLen: 0.95, petalWidth: 1.15, petalTip: 0.65, centerSize: 0.5, layers: 2, petalHueRange: [330, 350], satRange: [70, 90],  litRange: [55, 70] },
+    // 2: Tulipán magenta / fucsia – color vibrante
+    { petalLen: 1.05, petalWidth: 1.0, petalTip: 0.68, centerSize: 0.52, layers: 2, petalHueRange: [310, 328], satRange: [80, 100], litRange: [40, 55] },
+    // 3: Tulipán naranja – vivo y cálido
+    { petalLen: 1.0, petalWidth: 1.05, petalTip: 0.70, centerSize: 0.53, layers: 2, petalHueRange: [18, 35],   satRange: [88, 100], litRange: [45, 58] },
+    // 4: Tulipán amarillo – luminoso
+    { petalLen: 0.92, petalWidth: 1.1, petalTip: 0.67, centerSize: 0.54, layers: 2, petalHueRange: [44, 58],   satRange: [90, 100], litRange: [52, 65] },
+    // 5: Tulipán morado / violeta – elegante
+    { petalLen: 1.08, petalWidth: 0.95, petalTip: 0.73, centerSize: 0.52, layers: 2, petalHueRange: [265, 290], satRange: [65, 85],  litRange: [38, 52] },
+    // 6: Tulipán lavanda – delicado
+    { petalLen: 0.98, petalWidth: 1.05, petalTip: 0.66, centerSize: 0.50, layers: 2, petalHueRange: [245, 265], satRange: [50, 70],  litRange: [55, 68] },
+    // 7: Tulipán blanco-crema – puro
+    { petalLen: 1.0, petalWidth: 1.08, petalTip: 0.64, centerSize: 0.50, layers: 2, petalHueRange: [40, 55],   satRange: [15, 30],  litRange: [86, 96] },
 ];
 
 // =========================================================
@@ -257,40 +264,45 @@ function createFlower(x, y) {
         petalAngleJitter.push(rand(-0.08, 0.08)); // leve irregularidad angular
     }
 
-    // Hojas (1 a 3 hojas, formas distintas)
-    const leafCount = randInt(1, 3);
+    // Hojas del tulipán (1-2, largas y estrechas, características)
+    const leafCount = randInt(1, 2);
     const leaves = [];
     for (let i = 0; i < leafCount; i++) {
         leaves.push({
-            pos:      rand(0.22, 0.78),
+            pos:      rand(0.18, 0.55),
             side:     Math.random() > 0.5 ? 1 : -1,
-            size:     rand(0.55, 1.35),
-            angle:    rand(0.22, 0.62),
-            width:    rand(0.28, 0.52),  // relación ancho/largo de la hoja
-            drooping: rand(0, 0.3),      // cuánto "cae" la hoja
+            size:     rand(0.85, 1.6),    // hojas del tulipán son largas
+            angle:    rand(0.15, 0.42),
+            width:    rand(0.18, 0.30),   // más estrechas que flores genéricas
+            drooping: rand(0, 0.18),
         });
     }
     leaves.sort((a, b) => a.pos - b.pos);
 
-    // Variación de color
+    // Variación de color del tulipán según su tipo
     const [hMin, hMax] = type.petalHueRange;
+    const [sMin, sMax] = type.satRange;
+    const [lMin, lMax] = type.litRange;
     const hue = rand(hMin, hMax);
+    const sat = rand(sMin, sMax);
+    const lit = rand(lMin, lMax);
+    // Para tulipanes blancos, lit2 solo sube un poco
+    const lit2 = Math.min(lit + rand(5, 12), 98);
 
-    // Saturación y luminosidad variables
-    const sat   = rand(85, 100);
-    const lit   = rand(50, 68);
-    const lit2  = lit + rand(8, 18);
+    // Centro del tulipán: más oscuro y verdoso/amarillento en la base
+    const isBright = lit > 75; // tulipanes blancos
+    const centerH  = hue > 40 && hue < 65 ? rand(80, 100) : rand(90, 115); // base verde-amarilla
 
-    // Tallo: distintas curvaturas y grosores
-    const stemCurve    = rand(-18, 18);
-    const stemThick    = rand(0.85, 1.25);   // modificador del grosor del tallo
-    const stemZigzag   = Math.random() > 0.65 ? rand(0.3, 0.8) : 0; // tallos con quiebre leve
-    const stemHeight   = CONFIG.flower.stemHeightBase * scale * rand(0.75, 1.3);
+    // Tallo: curvaturas características del tulipán (más grácil)
+    const stemCurve    = rand(-22, 22);
+    const stemThick    = rand(0.75, 1.1);
+    const stemZigzag   = 0; // tulipanes tienen tallo más recto
+    const stemHeight   = CONFIG.flower.stemHeightBase * scale * rand(0.85, 1.45);
 
     return {
         x, y,
         scale,
-        rotation:       rand(-0.18, 0.18),
+        rotation:       rand(-0.12, 0.12),
         type,
         petalCount,
         petalSizes,
@@ -305,21 +317,22 @@ function createFlower(x, y) {
         growth:         0,
         isGrowing:      true,
         windPhase:      rand(0, Math.PI * 2),
-        windFreq:       rand(0.8, 1.3),  // cada flor "respira" diferente
+        windFreq:       rand(0.7, 1.2),
         bloomDone:      false,
 
-        // Color
+        // Color del tulipán
         petalHue:       hue,
         petalSat:       sat,
         petalLit:       lit,
         petalLit2:      lit2,
-        centerDark:     `hsl(${rand(22, 36)}, ${rand(50, 72)}%, ${rand(18, 30)}%)`,
-        centerMid:      `hsl(${rand(28, 40)}, ${rand(58, 78)}%, ${rand(30, 40)}%)`,
-        centerAccent:   `hsl(${rand(34, 46)}, ${rand(70, 90)}%, ${rand(44, 56)}%)`,
-        stemGreen1:     `hsl(${rand(100, 120)}, ${rand(38, 55)}%, ${rand(28, 40)}%)`,
-        stemGreen2:     `hsl(${rand(105, 125)}, ${rand(42, 60)}%, ${rand(34, 46)}%)`,
-        leafGreen1:     `hsl(${rand(98, 118)}, ${rand(36, 52)}%, ${rand(25, 38)}%)`,
-        leafGreen2:     `hsl(${rand(108, 128)}, ${rand(40, 56)}%, ${rand(38, 50)}%)`,
+        // Centro con tono verde-amarillento (base del pétalo del tulipán)
+        centerDark:     `hsl(${centerH}, ${rand(40, 60)}%, ${rand(15, 25)}%)`,
+        centerMid:      `hsl(${centerH + 10}, ${rand(50, 70)}%, ${rand(22, 35)}%)`,
+        centerAccent:   `hsl(${hue}, ${sat * 0.6}%, ${Math.min(lit + 18, 95)}%)`,
+        stemGreen1:     `hsl(${rand(105, 125)}, ${rand(42, 58)}%, ${rand(28, 40)}%)`,
+        stemGreen2:     `hsl(${rand(112, 130)}, ${rand(46, 62)}%, ${rand(36, 48)}%)`,
+        leafGreen1:     `hsl(${rand(100, 120)}, ${rand(38, 54)}%, ${rand(26, 38)}%)`,
+        leafGreen2:     `hsl(${rand(110, 128)}, ${rand(42, 58)}%, ${rand(38, 50)}%)`,
     };
 }
 
@@ -456,159 +469,131 @@ function drawLeafFull(leaf, stemH, progress, flower) {
 
 
 // =========================================================
-// ✏️ Dibujo – Pétalo (forma configurable por tipo)
+// 🌷 Dibujo – Copa del tulipán (forma característica de copa)
+//    Reemplaza el sistema de pétalos radiantes.
+//    Dibuja la cabeza completa del tulipán con:
+//      – 2 pétalos traseros oscuros
+//      – 3 pétalos frontales con gradiente de luz lateral
+//      – cáliz verde en la base
+//      – nervadura central y sombra de profundidad
 // =========================================================
-function drawPetal(angle, angleJitter, progress, sizeM, scale, flower, centerR, alpha, layer) {
-    if (progress <= 0) return;
+function drawTulipHead(flower, progress, scale) {
+    const p = ease.outCubic(clamp(progress));
+    if (p <= 0) return;
+
     const type = flower.type;
+    const h    = flower.petalHue;
+    const sat  = flower.petalSat;
+    const l    = flower.petalLit;
+
+    // Dimensiones de la copa (crecen con el progreso → animación de apertura)
+    // petalLen y petalWidth del tipo modulan proporciones (variedades)
+    const W  = 20 * scale * p * type.petalWidth;  // semiancho máximo
+    const H  = 30 * scale * p * type.petalLen;    // altura total de la copa
+    const bW = W * 0.24;                           // semiancho en el cáliz (base)
 
     ctx.save();
-    ctx.rotate(angle + angleJitter);
 
-    const p  = ease.outCubic(progress);
-    const pl = type.petalLen;
-    const pw = type.petalWidth;
+    // ── Función interna: dibuja un pétalo de la copa ──────────────────────
+    // xC: centro horizontal del pétalo
+    // wF: factor de ancho (0–1 relativo a W)
+    // lOff: offset de brillo
+    // isBack: true → pétalo trasero (más oscuro, sin detalles)
+    function tulipPetal(xC, wF, lOff, isBack) {
+        const pw = W * wF;
 
-    const len = 21 * sizeM * scale * pl * p;
-    const w   = 6.5 * sizeM * scale * pw * p;
+        ctx.beginPath();
+        // Punto de inicio: base del pétalo (junto al cáliz)
+        ctx.moveTo(xC - bW * 0.65, -H * 0.02);
 
-    // Forma diferente según capa: exterior más abierta, interior más cerrada
-    const openness  = layer === 0 ? 1.0 : 0.82;
-    const curve1    = type.petalTip;
+        // Borde izquierdo: se expande hacia el tercio medio y converge a la punta
+        ctx.bezierCurveTo(
+            xC - pw * 0.92, -H * 0.38,   // expansión lateral
+            xC - pw * 0.80, -H * 0.76,   // antes de la punta
+            xC - pw * 0.14, -H            // base de la punta
+        );
+        // Punta redondeada (característica del tulipán)
+        ctx.bezierCurveTo(
+            xC - pw * 0.03, -H * 1.07,
+            xC + pw * 0.03, -H * 1.07,
+            xC + pw * 0.14, -H
+        );
+        // Borde derecho (simétrico)
+        ctx.bezierCurveTo(
+            xC + pw * 0.80, -H * 0.76,
+            xC + pw * 0.92, -H * 0.38,
+            xC + bW * 0.65, -H * 0.02
+        );
+        ctx.closePath();
 
-    const cr = centerR * ease.outQuad(clamp(progress * 1.4));
+        const litF = l + lOff;
 
-    // Control points variados por tipo
+        if (isBack) {
+            // Pétalo trasero: color plano oscuro
+            ctx.fillStyle = `hsl(${h - 8}, ${sat - 6}%, ${Math.max(litF - 20, 8)}%)`;
+        } else {
+            // Gradiente lateral: luz desde la izquierda, sombra a la derecha
+            const gr = ctx.createLinearGradient(xC - pw, -H * 0.5, xC + pw * 0.9, -H * 0.5);
+            gr.addColorStop(0,    `hsl(${h + 9},  ${sat - 10}%, ${Math.min(litF + 20, 97)}%)`);
+            gr.addColorStop(0.18, `hsl(${h + 5},  ${sat - 4}%,  ${litF + 12}%)`);
+            gr.addColorStop(0.45, `hsl(${h},      ${sat}%,      ${litF + 2}%)`);
+            gr.addColorStop(0.75, `hsl(${h - 5},  ${sat + 2}%,  ${litF - 7}%)`);
+            gr.addColorStop(1,    `hsl(${h - 12}, ${sat - 4}%,  ${litF - 16}%)`);
+            ctx.fillStyle = gr;
+        }
+        ctx.fill();
+
+        // Nervadura central (solo en pétalos frontales)
+        if (!isBack) {
+            ctx.beginPath();
+            ctx.moveTo(xC, -H * 0.04);
+            ctx.bezierCurveTo(
+                xC - pw * 0.04, -H * 0.45,
+                xC + pw * 0.02, -H * 0.72,
+                xC,             -H * 0.96
+            );
+            ctx.strokeStyle = `hsla(${h - 10}, ${sat - 12}%, ${l - 22}%, 0.22)`;
+            ctx.lineWidth   = 0.85 * scale;
+            ctx.lineCap     = 'round';
+            ctx.stroke();
+        }
+    }
+
+    // ── Pétalos traseros (detrás del cuerpo) ────────────────────────────
+    tulipPetal(-W * 0.48, 0.52, -4, true);   // trasero izquierdo
+    tulipPetal( W * 0.48, 0.52, -4, true);   // trasero derecho
+
+    // ── Pétalos frontales (3 visibles: izq / der / centro) ──────────────
+    tulipPetal(-W * 0.40, 0.58, -2, false);  // frontal izquierdo
+    tulipPetal( W * 0.40, 0.58, -2, false);  // frontal derecho
+    tulipPetal( 0,        0.62, +6, false);  // frontal central (más brillante)
+
+    // ── Cáliz verde en la base ──────────────────────────────────────────
     ctx.beginPath();
-    ctx.moveTo(cr, 0);
-    ctx.bezierCurveTo(
-        cr + len * 0.26,           -w * openness,
-        cr + len * (0.62 + curve1 * 0.12), -w * 0.5 * openness,
-        cr + len,                   -w * 0.04
-    );
-    ctx.bezierCurveTo(
-        cr + len * (0.62 + curve1 * 0.12),  w * 0.5 * openness,
-        cr + len * 0.26,            w * openness,
-        cr, 0
-    );
-
-    // Gradiente del pétalo
-    const h  = flower.petalHue;
-    const s  = flower.petalSat;
-    const l1 = flower.petalLit  - (layer === 0 ? 4 : 0);
-    const l2 = flower.petalLit2 + (layer === 2 ? 6 : 0);
-    const a  = layer === 0 ? alpha * 0.58 : alpha * 0.92;
-
-    const pg = ctx.createLinearGradient(cr, 0, cr + len, 0);
-    pg.addColorStop(0,    `hsla(${h - 10}, ${s - 10}%, ${l1 - 6}%, ${a})`);
-    pg.addColorStop(0.3,  `hsla(${h - 2},  ${s}%, ${l1}%, ${a})`);
-    pg.addColorStop(0.65, `hsla(${h + 3},  ${s}%, ${l2}%, ${a})`);
-    pg.addColorStop(1,    `hsla(${h + 10}, ${s - 5}%, ${l2 + 8}%, ${a * 0.78})`);
-    ctx.fillStyle = pg;
+    ctx.ellipse(0, 0, bW * 1.2, bW * 0.5, 0, 0, Math.PI * 2);
+    ctx.fillStyle = flower.stemGreen2;
     ctx.fill();
 
-    // Nervadura sutil
+    // ── Sombra interna de profundidad (oscurece el interior de la copa) ──
+    const innerShadow = ctx.createRadialGradient(0, -H * 0.18, 0, 0, -H * 0.18, W * 0.9);
+    innerShadow.addColorStop(0.55, `hsla(${h - 10}, ${sat}%, ${l - 20}%, 0.0)`);
+    innerShadow.addColorStop(1,    `hsla(${h - 10}, ${sat}%, ${l - 20}%, 0.16)`);
     ctx.beginPath();
-    ctx.moveTo(cr + 1, 0);
-    ctx.lineTo(cr + len * 0.78, 0);
-    ctx.strokeStyle = `hsla(${h - 6}, ${s - 20}%, ${l1 - 10}%, ${a * 0.12})`;
-    ctx.lineWidth   = 0.42 * scale;
-    ctx.stroke();
+    ctx.ellipse(0, -H * 0.38, W * 1.08, H * 0.66, 0, 0, Math.PI * 2);
+    ctx.fillStyle = innerShadow;
+    ctx.fill();
 
     ctx.restore();
 }
 
-
-// =========================================================
-// ✏️ Dibujo – Todos los pétalos (capas según tipo)
-// =========================================================
-function drawPetals(flower, progress, scale) {
-    const count    = flower.petalCount;
-    const type     = flower.type;
-    const centerR  = 9 * scale * type.centerSize;
-    const numLayers = type.layers;
-
-    const petalDur = 0.36;
-    const petalDel = count > 1 ? (1 - petalDur) / (count - 1) : 0;
-
-    for (let layer = numLayers - 1; layer >= 0; layer--) {
-        const layerScale  = 1 - layer * 0.15;
-        const layerOffset = (layer / numLayers) * (Math.PI / count);
-        const layerDelay  = layer * 0.04;
-
-        for (let i = 0; i < count; i++) {
-            const angle  = (i / count) * Math.PI * 2 + flower.petalOffset + layerOffset;
-            const start  = i * petalDel + layerDelay;
-            const pP     = clamp((progress - start) / petalDur);
-            drawPetal(
-                angle,
-                flower.petalAngleJitter[i],
-                pP,
-                flower.petalSizes[i] * layerScale,
-                scale,
-                flower,
-                centerR,
-                1,
-                layer
-            );
-        }
-    }
-}
+// ── Stubs vacíos para no romper otras referencias ──────────────────────────
+function drawPetal() {}
+function drawPetals() {}
+function drawCenter() {}
 
 
 // =========================================================
-// ✏️ Dibujo – Centro
-// =========================================================
-function drawCenter(flower, progress, scale) {
-    const r = 9 * scale * flower.type.centerSize * ease.outBack(clamp(progress * 1.1));
-    if (r <= 0) return;
-
-    // Anillo exterior oscuro
-    ctx.beginPath();
-    ctx.arc(0, 0, r, 0, Math.PI * 2);
-    ctx.fillStyle = flower.centerDark;
-    ctx.fill();
-
-    if (progress > 0.2) {
-        // Anillo medio
-        ctx.beginPath();
-        ctx.arc(0, 0, r * 0.75, 0, Math.PI * 2);
-        ctx.fillStyle = flower.centerMid;
-        ctx.fill();
-    }
-
-    if (progress > 0.35) {
-        // Punto central brillante
-        ctx.beginPath();
-        ctx.arc(0, 0, r * 0.38, 0, Math.PI * 2);
-        ctx.fillStyle = flower.centerAccent;
-        ctx.fill();
-    }
-
-    // Patrón de semillas (espiral de Fibonacci aproximada)
-    if (progress > 0.45) {
-        const seedAlpha = clamp((progress - 0.45) / 0.55);
-        const goldenAngle = Math.PI * (3 - Math.sqrt(5));
-        const seedCount   = Math.floor(r * r * 0.55);
-        const maxR        = r * 0.92;
-
-        for (let i = 0; i < seedCount; i++) {
-            const sr    = Math.sqrt(i / seedCount) * maxR;
-            const sa    = i * goldenAngle;
-            const sx    = Math.cos(sa) * sr;
-            const sy    = Math.sin(sa) * sr;
-            const sSize = clamp(0.9 * scale * (1 - sr / (maxR * 1.2)), 0.3, 1.6);
-            ctx.beginPath();
-            ctx.arc(sx, sy, sSize, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(20, 12, 4, ${0.28 * seedAlpha})`;
-            ctx.fill();
-        }
-    }
-}
-
-
-// =========================================================
-// ✏️ Dibujo – Flor completa
+// ✏️ Dibujo – Flor completa (punto de entrada)
 // =========================================================
 function drawFlower(flower, time) {
     const g  = flower.growth;
@@ -660,25 +645,21 @@ function drawFlower(flower, time) {
         }
     }
 
-    // Centro (33%–58%)
-    const centerP = clamp((g - 0.33) / 0.25);
-    if (centerP > 0) drawCenter(flower, centerP, s);
+    // Copa del tulipán (40%–100%)
+    const headP = clamp((g - 0.40) / 0.58);
+    if (headP > 0) drawTulipHead(flower, headP, s);
 
-    // Pétalos (44%–100%)
-    const petalP = clamp((g - 0.44) / 0.52);
-    if (petalP > 0) drawPetals(flower, petalP, s);
-
-    // Destello final de bloom
+    // Destello de bloom con el color del tulipán
     if (g >= 0.90 && g < 1) {
         const glowP = clamp((g - 0.90) / 0.1);
-        const glowR = 32 * s * glowP;
-        const ga    = (1 - glowP) * 0.20;
-        const grd   = ctx.createRadialGradient(0, 0, 0, 0, 0, glowR);
-        grd.addColorStop(0, `rgba(255, 230, 80, ${ga})`);
-        grd.addColorStop(1, 'rgba(255, 230, 80, 0)');
+        const glowR = 28 * s * glowP;
+        const ga    = (1 - glowP) * 0.18;
+        const grd   = ctx.createRadialGradient(0, -glowR * 0.3, 0, 0, -glowR * 0.3, glowR);
+        grd.addColorStop(0, `hsla(${flower.petalHue}, ${flower.petalSat}%, ${flower.petalLit + 15}%, ${ga})`);
+        grd.addColorStop(1, `hsla(${flower.petalHue}, ${flower.petalSat}%, ${flower.petalLit}%, 0)`);
         ctx.fillStyle = grd;
         ctx.beginPath();
-        ctx.arc(0, 0, glowR, 0, Math.PI * 2);
+        ctx.arc(0, -glowR * 0.3, glowR, 0, Math.PI * 2);
         ctx.fill();
     }
 
@@ -689,8 +670,12 @@ function drawFlower(flower, time) {
 // =========================================================
 // ✨ Partículas
 // =========================================================
+// Paleta de colores de tulipanes para partículas
+const TULIP_PARTICLE_HUES = [0, 15, 330, 345, 310, 270, 250, 50];
 function createBloomParticles(x, y) {
     if (!CONFIG.particles.enabled) return;
+    // Elegir un color de tulipán aleatorio para las partículas del bloom
+    const baseHue = TULIP_PARTICLE_HUES[Math.floor(Math.random() * TULIP_PARTICLE_HUES.length)];
     for (let i = 0; i < CONFIG.particles.bloomBurst; i++) {
         const angle = rand(0, Math.PI * 2);
         const speed = rand(0.3, 2.2);
@@ -701,7 +686,7 @@ function createBloomParticles(x, y) {
             life:  1,
             decay: rand(0.010, 0.022),
             size:  rand(1.2, 3.2),
-            hue:   rand(38, 58),
+            hue:   baseHue + rand(-12, 12),
         });
     }
 }
@@ -711,6 +696,7 @@ function spawnAmbientParticle() {
     if (state.flowers.length === 0) return;
     if (state.particles.length >= CONFIG.particles.maxAmbient + 12) return;
     const f = state.flowers[Math.floor(Math.random() * state.flowers.length)];
+    // Las partículas ambientales toman el color del tulipán del que emergen
     state.particles.push({
         x: f.x + rand(-30, 30),
         y: f.y + rand(-10, 20),
@@ -719,7 +705,7 @@ function spawnAmbientParticle() {
         life:  1,
         decay: rand(0.003, 0.007),
         size:  rand(0.8, 2.0),
-        hue:   rand(36, 56),
+        hue:   f.petalHue + rand(-8, 8),
     });
 }
 
@@ -908,7 +894,7 @@ function triggerFlashMilestone(count, phrase) {
     toast.className = 'milestone-toast';
 
     toast.innerHTML = `
-        <span class="toast-count">${count} flores 🌻</span>
+        <span class="toast-count">${count} tulipanes 🌷</span>
         <span class="toast-phrase">${phrase}</span>
     `;
 
